@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WhatsApp Simulado</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+    body {
+      margin: 0;
+      background: #ece5dd;
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+    .phone {
+      width: 360px;
+      height: 640px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border-radius: 30px;
+      overflow: hidden;
+    }
+    .header {
+      background: #075e54;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: white;
+      font-weight: 500;
+      font-size: 18px;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+      gap: 12px;
+    }
+    .header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid #25d366;
+      box-sizing: border-box;
+    }
+    .header input.name-input {
+      background: transparent;
+      border: none;
+      color: white;
+      font-weight: 500;
+      font-size: 18px;
+      outline: none;
+      flex: 1;
+    }
+    .chat {
+      flex: 1;
+      padding: 12px 8px 12px 8px;
+      overflow-y: auto;
+      background: #ece5dd;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+    }
+    .chat::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 3px;
+    }
+    .message {
+      max-width: 80%;
+      padding: 8px 12px;
+      font-size: 14px;
+      line-height: 18px;
+      position: relative;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .me {
+      align-self: flex-end;
+      background: #dcf8c6;
+      border-radius: 7.5px 7.5px 0 7.5px;
+      box-shadow:
+        inset 0 -1px 0 #b2d8a6;
+    }
+    .contact {
+      align-self: flex-start;
+      background: #fff;
+      border-radius: 7.5px 7.5px 7.5px 0;
+      box-shadow:
+        inset 0 -1px 0 #dcdcdc;
+    }
+    .timestamp {
+      font-size: 10px;
+      color: gray;
+      position: absolute;
+      bottom: 3px;
+      right: 8px;
+      user-select: none;
+      font-weight: 400;
+      opacity: 0.7;
+      font-family: 'Roboto', sans-serif;
+    }
+    .input-area {
+      background: #f0f0f0;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid #ddd;
+    }
+    .input-area input[type="text"] {
+      flex: 1;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
+      background: white;
+      box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.1);
+    }
+    .input-area input[type="datetime-local"] {
+      width: 150px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
+    }
+    .buttons {
+      display: flex;
+      gap: 6px;
+    }
+    .buttons button {
+      padding: 10px 16px;
+      border-radius: 50%;
+      border: none;
+      background: #25d366;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 44px;
+      height: 44px;
+      box-shadow: 0 2px 3px rgb(0 0 0 / 0.2);
+      transition: background 0.3s ease;
+    }
+    .buttons button.contact {
+      background: #34b7f1;
+    }
+    .buttons button:hover {
+      filter: brightness(0.9);
+    }
+    .controls {
+      padding: 10px 12px;
+      background: #f8f8f8;
+      border-top: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+    }
+    .controls label {
+      font-weight: 500;
+    }
+    .controls input[type="file"] {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone" role="main" aria-label="Simulador de chat WhatsApp">
+    <div class="header">
+      <img src="https://i.imgur.com/1X1KpDq.png" alt="Foto de contacto" id="contact-img" tabindex="0" />
+      <input
+        type="text"
+        class="name-input"
+        id="contact-name"
+        value="Nombre del contacto"
+        aria-label="Nombre del contacto"
+      />
+    </div>
+
+    <div class="chat" id="chat" aria-live="polite" aria-relevant="additions"></div>
+
+    <div class="input-area" role="form" aria-label="Área para enviar mensajes">
+      <input
+        type="text"
+        id="msg-input"
+        placeholder="Escribe un mensaje... (usa emojis si quieres)"
+        aria-label="Mensaje"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <input type="datetime-local" id="msg-datetime" aria-label="Fecha y hora del mensaje" />
+      <div class="buttons">
+        <button onclick="sendMessage('me')" aria-label="Enviar mensaje como Yo">Yo</button>
+        <button class="contact" onclick="sendMessage('contact')" aria-label="Enviar mensaje como Contacto">
+          Contacto
+        </button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label for="img-upload">📷 Cambiar foto del contacto:</label>
+      <input type="file" id="img-upload" accept="image/*" aria-label="Subir imagen de contacto" />
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("msg-input");
+    const dateInput = document.getElementById("msg-datetime");
+    const contactImg = document.getElementById("contact-img");
+    const imgUpload = document.getElementById("img-upload");
+
+    function formatDateTime(date) {
+      const now = new Date();
+      const d = new Date(date);
+      if (isNaN(d)) return "";
+      const isToday = d.toDateString() === now.toDateString();
+
+      let hours = d.getHours();
+      let minutes = d.getMinutes();
+      if (minutes < 10) minutes = "0" + minutes;
+      if (hours < 10) hours = "0" + hours;
+
+      if (isToday) {
+        return `${hours}:${minutes}`;
+      } else {
+        let day = d.getDate();
+        let month = d.getMonth() + 1;
+        if (day < 10) day = "0" + day;
+        if (month < 10) month = "0" + month;
+        return `${day}/${month} ${hours}:${minutes}`;
+      }
+    }
+
+    function sendMessage(sender) {
+      const text = input.value.trim();
+      if (!text) return;
+      const dt = dateInput.value;
+      const msg = document.createElement("div");
+      msg.className = "message " + sender;
+      msg.innerHTML = `<span>${text}</span><div class="timestamp">${formatDateTime(dt)}</
